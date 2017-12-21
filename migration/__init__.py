@@ -6,7 +6,7 @@ from migration.file_data import file_data
 class Migration(object):
 
     def __init__(self):
-        self.f = open("migration.log","wb")
+        self.f = open("migration.log","w")
         self.f.write("Exception log for Compliance Assist migration task.")
         self.compliance_assist = compliance_assist.Site()
         self.g_drive = g_drive.Site()
