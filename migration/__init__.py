@@ -31,7 +31,7 @@ class Migration(object):
         for file_ in file_data[folder]:
             file_name = file_["file_name"]
             file_name = self._unduplicate(file_name,folder)
-            self.file_buffer.add(file_name,folder)                
+            self.file_buffer.add(file_name)                
             file_url = file_["link"]
             self.compliance_assist.download(file_url)
 
