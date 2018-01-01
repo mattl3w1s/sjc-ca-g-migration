@@ -1,4 +1,4 @@
-import os
+import os, shutil
 import g_drive
 import compliance_assist
 from migration.file_data import file_data
@@ -11,22 +11,32 @@ class Migration(object):
         self.f = open("migration.log","w")
         self.f.write("Exception log for Compliance Assist migration task.\n\n")
         self.compliance_assist = compliance_assist.Site(download_destination=WORKING_DIRECTORY)
-        self.g_drive = g_drive.Site()
+        self.g_drive = g_drive.Site(download_destination=WORKING_DIRECTORY)
         self.file_data = file_data
 
     def migrate(self):
         for folder in self.file_data:
             self.download_directory(folder)
+            self.g_drive.create_folder(folder)
+            self.g_drive.goto(self.g_drive.G_DRIVE_MAIN_PAGE_URL+"\\"+folder.replace('\s','%20').replace('&','%26').replace('(','%28').replace(')','%29'))
             self.upload_directory(folder)
             self._clean()
     
     def upload_directory(self,folder):
         # TODO: Implement this method.
-        pass
+        self.g_drive.upload_files(WORKING_DIRECTORY,self.file_buffer)
+
 
     def _clean(self):
         # TODO: Implement this method.
-        pass     
+        for the_file in os.listdir(WORKING_DIRECTORY):
+            file_path = os.path.join(WORKING_DIRECTORY, the_file)
+            try:
+                if os.path.isfile(file_path):
+                    os.unlink(file_path)
+                #elif os.path.isdir(file_path): shutil.rmtree(file_path)
+            except Exception as e:
+                print(e)
 
     def download_directory(self,folder):
         self.file_buffer = set()
