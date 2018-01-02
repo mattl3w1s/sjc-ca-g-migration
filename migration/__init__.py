@@ -44,8 +44,7 @@ class Migration(object):
         for file_ in file_data[folder]:
             file_downloaded = None
             file_name = file_["file_name"]
-            file_name = self._unduplicate(file_name,folder)
-            self.file_buffer.add(file_name)                
+            file_name = self._unduplicate(file_name,folder)                
             file_url = file_["link"]
             try:
                 print(folder,file_name)
@@ -54,11 +53,12 @@ class Migration(object):
                 self.f.write("Could not retrieve {} from compliance assist at link: {}\n\n".format(file_name,file_url))
                 continue
             except compliance_assist.ChangelessDirectoryError:
-                self.f.write("Downloader threw error due to no change upon download in {}.".format(folder))
+                self.f.write("No download response for file {} in {}.".format(file_name,folder))
                 continue
             except Exception as e:
                 self.f.write("Error: {}".format(e))
                 continue
+            self.file_buffer.add(file_name)
 
             try:
                 os.rename(WORKING_DIRECTORY+"/"+file_downloaded,WORKING_DIRECTORY+"/"+file_name)
